@@ -16,14 +16,28 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Очистка кэша при ошибках
+# Система кэширования данных
 @st.cache_data(ttl=3600)
-def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None):
-    """Загрузка и обработка данных"""
+def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None, force_reload=False):
+    """Загрузка и обработка данных с кэшированием"""
+    
+    # Ключ кэша на основе загруженных файлов
+    cache_key = "default"
+    if uploaded_interests_file is not None:
+        cache_key = f"interests_{uploaded_interests_file.name}_{uploaded_interests_file.size}"
+    if uploaded_deals_file is not None:
+        cache_key += f"_deals_{uploaded_deals_file.name}_{uploaded_deals_file.size}"
+    
+    # Проверяем, есть ли сохраненные данные
+    if not force_reload and 'cached_interests' in st.session_state and 'cached_deals' in st.session_state:
+        st.success("✅ Используются сохраненные данные")
+        return st.session_state.cached_interests, st.session_state.cached_deals
+    
     try:
         # Загружаем данные
         if uploaded_interests_file is not None:
             interests_df = pd.read_excel(uploaded_interests_file)
+            st.success(f"📊 Загружен файл интересов: {uploaded_interests_file.name}")
         else:
             # Проверяем существование файла
             if not os.path.exists("список интересов за 2024-2025.xlsx"):
@@ -31,9 +45,11 @@ def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None
                 interests_df = create_demo_interests_data()
             else:
                 interests_df = pd.read_excel("список интересов за 2024-2025.xlsx")
+                st.success("📊 Загружен локальный файл интересов")
             
         if uploaded_deals_file is not None:
             deals_df = pd.read_excel(uploaded_deals_file)
+            st.success(f"📊 Загружен файл сделок: {uploaded_deals_file.name}")
         else:
             # Проверяем существование файла
             if not os.path.exists("список сделок за 2024-2025.xlsx"):
@@ -41,6 +57,7 @@ def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None
                 deals_df = create_demo_deals_data()
             else:
                 deals_df = pd.read_excel("список сделок за 2024-2025.xlsx")
+                st.success("📊 Загружен локальный файл сделок")
         
         # Обработка интересов
         interests_df['Дата создания'] = pd.to_datetime(interests_df['Дата создания'], format='%d.%m.%Y %H:%M:%S', errors='coerce')
@@ -80,6 +97,11 @@ def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None
         
         deals_df['Месяц'] = deals_df['Дата_из_ссылки'].dt.to_period('M')
         deals_df['Месяц_год'] = deals_df['Дата_из_ссылки'].dt.strftime('%Y-%m')
+        
+        # Сохраняем данные в session_state для кэширования
+        st.session_state.cached_interests = interests_df
+        st.session_state.cached_deals = deals_df
+        st.session_state.last_upload_time = datetime.now()
         
         return interests_df, deals_df
         
@@ -601,29 +623,52 @@ def main():
     # Загрузка данных
     interests_df, deals_df = load_and_process_data()
     
-    # Блок загрузки файлов (скрывающийся)
+    # Блок загрузки файлов с управлением кэшем
     with st.expander("📁 Загрузка файлов", expanded=False):
         col1, col2, col3 = st.columns([1, 1, 1])
+        
+        # Показываем информацию о кэше
+        if 'cached_interests' in st.session_state and 'cached_deals' in st.session_state:
+            st.info(f"💾 Данные сохранены в кэше (загружены: {st.session_state.get('last_upload_time', 'неизвестно')})")
+        
         with col1:
             uploaded_interests = st.file_uploader("📊 Загрузить файл интересов", type=['xlsx', 'xls'], key="interests_uploader")
             if uploaded_interests is not None:
                 st.success(f"✅ Загружен файл: {uploaded_interests.name}")
                 st.caption(f"📅 Дата загрузки: {datetime.now().strftime('%d.%m.%Y %H:%M')}")
+        
         with col2:
             uploaded_deals = st.file_uploader("📊 Загрузить файл сделок", type=['xlsx', 'xls'], key="deals_uploader")
             if uploaded_deals is not None:
                 st.success(f"✅ Загружен файл: {uploaded_deals.name}")
                 st.caption(f"📅 Дата загрузки: {datetime.now().strftime('%d.%m.%Y %H:%M')}")
         
-        # Кнопка для обновления данных
+        # Кнопки управления кэшем
         with col3:
-            if st.button("🔄 Обновить данные", type="primary", use_container_width=True):
-                st.cache_data.clear()
-                st.rerun()
+            col3_1, col3_2 = st.columns(2)
+            with col3_1:
+                if st.button("🔄 Обновить данные", type="primary", use_container_width=True):
+                    # Очищаем кэш и перезагружаем
+                    if 'cached_interests' in st.session_state:
+                        del st.session_state.cached_interests
+                    if 'cached_deals' in st.session_state:
+                        del st.session_state.cached_deals
+                    st.cache_data.clear()
+                    st.rerun()
+            
+            with col3_2:
+                if st.button("🗑️ Очистить кэш", use_container_width=True):
+                    # Очищаем только кэш, но не перезагружаем
+                    if 'cached_interests' in st.session_state:
+                        del st.session_state.cached_interests
+                    if 'cached_deals' in st.session_state:
+                        del st.session_state.cached_deals
+                    st.success("✅ Кэш очищен")
+                    st.rerun()
     
     # Загружаем данные с учетом загруженных файлов
     if uploaded_interests is not None or uploaded_deals is not None:
-        interests_df, deals_df = load_and_process_data(uploaded_interests, uploaded_deals)
+        interests_df, deals_df = load_and_process_data(uploaded_interests, uploaded_deals, force_reload=True)
     
     if interests_df is not None and deals_df is not None:
         # Создаем сводную таблицу по месяцам
