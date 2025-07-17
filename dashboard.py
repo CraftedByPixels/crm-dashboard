@@ -16,165 +16,76 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Применяем кастомную тему
-st.markdown("""
-<style>
-:root {
-  --background: #e8ebed;
-  --foreground: #333333;
-  --card: #ffffff;
-  --card-foreground: #333333;
-  --popover: #ffffff;
-  --popover-foreground: #333333;
-  --primary: #e05d38;
-  --primary-foreground: #ffffff;
-  --secondary: #f3f4f6;
-  --secondary-foreground: #4b5563;
-  --muted: #f9fafb;
-  --muted-foreground: #6b7280;
-  --accent: #d6e4f0;
-  --accent-foreground: #1e3a8a;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #dcdfe2;
-  --input: #f4f5f7;
-  --ring: #e05d38;
-  --chart-1: #86a7c8;
-  --chart-2: #eea591;
-  --chart-3: #5a7ca6;
-  --chart-4: #466494;
-  --chart-5: #334c82;
-  --sidebar: #dddfe2;
-  --sidebar-foreground: #333333;
-  --sidebar-primary: #e05d38;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #d6e4f0;
-  --sidebar-accent-foreground: #1e3a8a;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #e05d38;
-  --font-sans: Inter, sans-serif;
-  --font-serif: Source Serif 4, serif;
-  --font-mono: JetBrains Mono, monospace;
-  --radius: 0.75rem;
-  --shadow-2xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.10), 0px 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow: 0px 1px 3px 0px hsl(0 0% 0% / 0.10), 0px 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0px 1px 3px 0px hsl(0 0% 0% / 0.10), 0px 2px 4px -1px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0px 1px 3px 0px hsl(0 0% 0% / 0.10), 0px 4px 6px -1px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.10), 0px 8px 10px -1px hsl(0 0% 0% / 0.10);
-  --shadow-2xl: 0px 1px 3px 0px hsl(0 0% 0% / 0.25);
-  --tracking-normal: 0em;
-  --spacing: 0.25rem;
-}
-
-/* Применяем цвета к элементам Streamlit */
-.main .block-container {
-    background-color: var(--background) !important;
-}
-
-.stApp {
-    background-color: var(--background) !important;
-}
-
-/* Стили для метрик */
-.kpi-card {
-    background: var(--card);
-    color: var(--card-foreground);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    padding: 20px 24px 16px 24px;
-    margin-bottom: 24px;
-    font-family: var(--font-sans);
-    min-width: 240px;
-    transition: box-shadow .15s;
-}
-.kpi-card-label {
-    font-size: 1.03rem;
-    font-weight: 500;
-    color: #6b7280;
-    margin-bottom: 6px;
-}
-.kpi-card-value {
-    font-size: 2.05rem;
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: 4px;
-    margin-top: 2px;
-}
-
-/* Стили для метрик с дельтой */
-.kpi-card-delta {
-    background: var(--card);
-    color: var(--card-foreground);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    padding: 20px 28px 18px 28px;
-    font-family: var(--font-sans);
-    min-width: 238px;
-    margin-bottom: 18px;
-    display: flex; 
-    flex-direction: column;
-    gap: 3px;
-}
-.kpi-label { 
-    font-size: 1rem; 
-    color: #787c8a; 
-    font-weight: 500;
-}
-.kpi-value { 
-    font-size: 2.0rem; 
-    font-weight: 800; 
-    color: var(--primary); 
-    margin-top: 7px;
-}
-.kpi-delta-up {
-    color: #16a34a;
-    font-size: 1rem;
-    margin-bottom: 3px;
-    font-weight: 500;
-}
-.kpi-delta-blue {
-    color: #3b82f6;
-    font-size: 1rem;
-    margin-bottom: 3px;
-    font-weight: 500;
-}
-.kpi-delta-down {
-    color: #ef4444;
-    font-size: 1rem;
-    margin-bottom: 3px;
-    font-weight: 500;
-}
-.kpi-caption {
-    font-size: 0.97rem;
-    color: #888;
-    margin-top: 4px;
-}
-
-/* Стили для заголовков */
-h1, h2, h3, h4, h5, h6 {
-    color: var(--foreground) !important;
-}
-
-/* Стили для текста */
-p, div, span {
-    color: var(--foreground) !important;
-}
-
-/* Стили для основного контейнера */
-.main .block-container {
-    background-color: var(--background) !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Заголовок
-st.subheader("📊 CRM Анализ интересов и сделок")
-
-st.markdown("---")
+# Очистка кэша при ошибках
+@st.cache_data(ttl=3600)
+def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None):
+    """Загрузка и обработка данных"""
+    try:
+        # Загружаем данные
+        if uploaded_interests_file is not None:
+            interests_df = pd.read_excel(uploaded_interests_file)
+        else:
+            # Проверяем существование файла
+            if not os.path.exists("список интересов за 2024-2025.xlsx"):
+                st.warning("Файл данных не найден. Создаю демо-данные...")
+                interests_df = create_demo_interests_data()
+            else:
+                interests_df = pd.read_excel("список интересов за 2024-2025.xlsx")
+            
+        if uploaded_deals_file is not None:
+            deals_df = pd.read_excel(uploaded_deals_file)
+        else:
+            # Проверяем существование файла
+            if not os.path.exists("список сделок за 2024-2025.xlsx"):
+                st.warning("Файл данных не найден. Создаю демо-данные...")
+                deals_df = create_demo_deals_data()
+            else:
+                deals_df = pd.read_excel("список сделок за 2024-2025.xlsx")
+        
+        # Обработка интересов
+        interests_df['Дата создания'] = pd.to_datetime(interests_df['Дата создания'], format='%d.%m.%Y %H:%M:%S', errors='coerce')
+        
+        # Фильтрация данных с 01.01.2024
+        start_date = pd.to_datetime('2024-01-01')
+        interests_df = interests_df[interests_df['Дата создания'] >= start_date]
+        
+        interests_df['Телефон_нормализованный'] = interests_df['Телефон'].apply(normalize_phone)
+        interests_df['Вид события_классифицированный'] = interests_df['Вид события'].apply(classify_event_type)
+        interests_df['Проект_обработанный'] = interests_df['Проект'].apply(replace_project_values)
+        interests_df['Месяц'] = interests_df['Дата создания'].dt.to_period('M')
+        interests_df['Месяц_год'] = interests_df['Дата создания'].dt.strftime('%Y-%m')
+        
+        # Обработка сделок - извлекаем дату из колонки "Ссылка"
+        def extract_date_from_link(link_text):
+            if pd.isna(link_text):
+                return None
+            
+            link_text = str(link_text)
+            # Ищем дату в формате "от DD.MM.YYYY HH:MM:SS"
+            import re
+            match = re.search(r'от (\d{1,2})\.(\d{1,2})\.(\d{4})', link_text)
+            if match:
+                day, month, year = match.groups()
+                try:
+                    return datetime(int(year), int(month), int(day))
+                except:
+                    return None
+            return None
+        
+        # Извлекаем даты из колонки "Ссылка"
+        deals_df['Дата_из_ссылки'] = deals_df['Ссылка (служебное поле для вывода на экран прочих реквизитов объекта)'].apply(extract_date_from_link)
+        
+        # Фильтрация данных с 01.01.2024
+        deals_df = deals_df[deals_df['Дата_из_ссылки'] >= start_date]
+        
+        deals_df['Месяц'] = deals_df['Дата_из_ссылки'].dt.to_period('M')
+        deals_df['Месяц_год'] = deals_df['Дата_из_ссылки'].dt.strftime('%Y-%m')
+        
+        return interests_df, deals_df
+        
+    except Exception as e:
+        st.error(f"Ошибка загрузки данных: {e}")
+        return None, None
 
 def normalize_phone(phone):
     """Нормализация телефонных номеров"""
@@ -264,66 +175,6 @@ def get_unique_interests(df):
                     last_date = current_date
     
     return unique_interests
-
-@st.cache_data
-def load_and_process_data(uploaded_interests_file=None, uploaded_deals_file=None):
-    """Загрузка и обработка данных"""
-    try:
-        # Загружаем данные
-        if uploaded_interests_file is not None:
-            interests_df = pd.read_excel(uploaded_interests_file)
-        else:
-            interests_df = pd.read_excel("список интересов за 2024-2025.xlsx")
-            
-        if uploaded_deals_file is not None:
-            deals_df = pd.read_excel(uploaded_deals_file)
-        else:
-            deals_df = pd.read_excel("список сделок за 2024-2025.xlsx")
-        
-        # Обработка интересов
-        interests_df['Дата создания'] = pd.to_datetime(interests_df['Дата создания'], format='%d.%m.%Y %H:%M:%S', errors='coerce')
-        
-        # Фильтрация данных с 01.01.2024
-        start_date = pd.to_datetime('2024-01-01')
-        interests_df = interests_df[interests_df['Дата создания'] >= start_date]
-        
-        interests_df['Телефон_нормализованный'] = interests_df['Телефон'].apply(normalize_phone)
-        interests_df['Вид события_классифицированный'] = interests_df['Вид события'].apply(classify_event_type)
-        interests_df['Проект_обработанный'] = interests_df['Проект'].apply(replace_project_values)
-        interests_df['Месяц'] = interests_df['Дата создания'].dt.to_period('M')
-        interests_df['Месяц_год'] = interests_df['Дата создания'].dt.strftime('%Y-%m')
-        
-        # Обработка сделок - извлекаем дату из колонки "Ссылка"
-        def extract_date_from_link(link_text):
-            if pd.isna(link_text):
-                return None
-            
-            link_text = str(link_text)
-            # Ищем дату в формате "от DD.MM.YYYY HH:MM:SS"
-            import re
-            match = re.search(r'от (\d{1,2})\.(\d{1,2})\.(\d{4})', link_text)
-            if match:
-                day, month, year = match.groups()
-                try:
-                    return datetime(int(year), int(month), int(day))
-                except:
-                    return None
-            return None
-        
-        # Извлекаем даты из колонки "Ссылка"
-        deals_df['Дата_из_ссылки'] = deals_df['Ссылка (служебное поле для вывода на экран прочих реквизитов объекта)'].apply(extract_date_from_link)
-        
-        # Фильтрация данных с 01.01.2024
-        deals_df = deals_df[deals_df['Дата_из_ссылки'] >= start_date]
-        
-        deals_df['Месяц'] = deals_df['Дата_из_ссылки'].dt.to_period('M')
-        deals_df['Месяц_год'] = deals_df['Дата_из_ссылки'].dt.strftime('%Y-%m')
-        
-        return interests_df, deals_df
-        
-    except Exception as e:
-        st.error(f"Ошибка загрузки данных: {e}")
-        return None, None
 
 def create_monthly_summary(interests_df, deals_df):
     """Создание сводной таблицы по месяцам"""
@@ -698,6 +549,53 @@ def create_conversion_chart(monthly_data):
     except Exception as e:
         st.error(f"Ошибка создания графика конверсии: {e}")
         return None
+
+def create_demo_interests_data():
+    """Создание демо-данных для интересов"""
+    np.random.seed(42)
+    
+    # Создаем даты
+    dates = pd.date_range('2024-01-01', '2025-01-31', freq='D')
+    
+    # Создаем данные
+    data = []
+    event_types = ['Сайт', 'Телефонный звонок', 'Электронное письмо', 'Прочее']
+    sources = ['Прямые заходы', 'Google', 'Яндекс', 'Рекомендации', 'Социальные сети']
+    projects = ['Кровля и Фасады', 'Ангары', 'Блоки', 'Дома', 'Снабжение']
+    managers = ['Иванов И.И.', 'Петров П.П.', 'Сидоров С.С.', 'Козлов К.К.']
+    
+    for i in range(1000):
+        date = np.random.choice(dates)
+        data.append({
+            'Дата создания': date.strftime('%d.%m.%Y %H:%M:%S'),
+            'Телефон': f'+7{np.random.randint(9000000000, 9999999999)}',
+            'Вид события': np.random.choice(event_types),
+            'Источник интереса': np.random.choice(sources),
+            'Проект': np.random.choice(projects),
+            'Ответственный': np.random.choice(managers)
+        })
+    
+    return pd.DataFrame(data)
+
+def create_demo_deals_data():
+    """Создание демо-данных для сделок"""
+    np.random.seed(42)
+    
+    # Создаем даты
+    dates = pd.date_range('2024-01-01', '2025-01-31', freq='D')
+    
+    # Создаем данные
+    data = []
+    managers = ['Иванов И.И.', 'Петров П.П.', 'Сидоров С.С.', 'Козлов К.К.']
+    
+    for i in range(300):
+        date = np.random.choice(dates)
+        data.append({
+            'Ссылка (служебное поле для вывода на экран прочих реквизитов объекта)': f'Сделка от {date.strftime("%d.%m.%Y")} 12:00:00',
+            'Ответственный': np.random.choice(managers)
+        })
+    
+    return pd.DataFrame(data)
 
 def main():
     # Загрузка данных
